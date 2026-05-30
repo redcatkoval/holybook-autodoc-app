@@ -1,0 +1,15 @@
+# macOS
+.DS_Store
+
+# Backups / editor cruft
+*.bak
+*.swp
+*~
+
+# Python
+__pycache__/
+*.pyc
+
+# Local-only working folders
+other versions/
+.claude/

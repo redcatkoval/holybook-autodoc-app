@@ -1,0 +1,116 @@
+{
+  "701bc8db-f13c-43dc-8f57-df5823a91bb3": {
+    "mime": "application/javascript",
+    "compressed": true,
+    "_parts": [
+      "kit/text-helpers.jsx",
+      "kit/phone-primitives.jsx",
+      "part2/p01-tab-bar.jsx",
+      "part2/p-search.jsx",
+      "part2/p02-modal-views.jsx",
+      "part2/p03-webview.jsx",
+      "part2/p04-multi-step.jsx",
+      "part2/p05-final-screens.jsx",
+      "part2/p06-dialogs.jsx",
+      "part2/p07-snackbars.jsx",
+      "part2/p08-infoblocks.jsx",
+      "part2/p09-loading.jsx",
+      "part2/p-empty.jsx",
+      "part2/p-errors.jsx",
+      "part2/p10-dynamic-island.jsx",
+      "part2/p11-dropdown.jsx",
+      "part2/p-contextmenu.jsx",
+      "part2/p13-swipe.jsx",
+      "part2/p14-promo.jsx",
+      "part2/p15-product-card.jsx",
+      "part2/p-accordion.jsx",
+      "part2/p-optimistic.jsx",
+      "part2/p-listfilter.jsx",
+      "part2/p-stepper.jsx",
+      "part2/p-gallery.jsx",
+      "part2/p-reviews.jsx",
+      "part2/p-buttons.jsx",
+      "part2/p-filters.jsx",
+      "part2-notready/_helpers.jsx",
+      "part2-notready/p-catalog-nav.jsx",
+      "part2-notready/pr23-confirm-sheet.jsx",
+      "part2-notready/p-map.jsx",
+      "part2-notready/p-scanner.jsx",
+      "part3/_helpers.jsx",
+      "part3/p-checkout.jsx",
+      "part3/p-auth.jsx",
+      "part3/p-addcar.jsx"
+    ]
+  },
+  "02c02b73-885e-4e72-8d3b-f768c1accb06": {
+    "_name": "kit/phone-shell.jsx",
+    "mime": "application/javascript",
+    "compressed": true
+  },
+  "1785f3d1-7dd4-4dcc-9c7a-418263339660": {
+    "_name": "part1/ch01-foundation.jsx",
+    "mime": "application/javascript",
+    "compressed": true
+  },
+  "073d1edd-7374-4e00-855b-034f181e37af": {
+    "_name": "part1/ch02-layers.jsx",
+    "mime": "application/javascript",
+    "compressed": true
+  },
+  "b67576c8-9486-4ecb-b0a7-bf10638abf24": {
+    "_name": "part1/ch04-curtain.jsx",
+    "mime": "application/javascript",
+    "compressed": true
+  },
+  "cf52ed74-12b4-4ff9-9905-6a1da5b0de4e": {
+    "_name": "part1/ch05-corridor.jsx",
+    "mime": "application/javascript",
+    "compressed": true
+  },
+  "29ae0c2f-cf33-4be4-a237-a8e46996ba9f": {
+    "_name": "part1/ch06-states.jsx",
+    "mime": "application/javascript",
+    "compressed": true
+  },
+  "470b337f-2b81-4a39-ab6d-f99db859768a": {
+    "_name": "part1/ch07-accessibility.jsx",
+    "mime": "application/javascript",
+    "compressed": true
+  },
+  "86cbc9fd-6cef-4ce8-99f4-bfc519db08d1": {
+    "_name": "part1/ch03-garage.jsx",
+    "mime": "application/javascript",
+    "compressed": true
+  },
+  "63b7462f-cc5e-494c-b228-b550d03079e2": {
+    "mime": "application/javascript",
+    "compressed": true,
+    "_parts": [
+      "app/cover.jsx",
+      "app/toc.jsx",
+      "app/tweaks.jsx",
+      "app/reading-guide.jsx",
+      "app/main.jsx"
+    ]
+  },
+  "3c610e06-7907-4d15-a391-2ae755af1b57": {
+    "_name": "kit/tweaks-panel.jsx",
+    "mime": "text/jsx",
+    "compressed": true
+  },
+  "3b6e3bfe-b001-4182-95bc-d36e3f6a2a4f": {
+    "_name": "vendor/react.js",
+    "mime": "text/javascript",
+    "compressed": true
+  },
+  "2dd7b41c-d38a-4466-8dc1-bbc874dda016": {
+    "_name": "vendor/react-dom.js",
+    "mime": "text/javascript",
+    "compressed": true
+  },
+  "def935e7-e4f2-45d9-8cd2-60a9cee4f19b": {
+    "_name": "vendor/babel-standalone.js",
+    "mime": "text/javascript",
+    "compressed": true
+  }
+}
