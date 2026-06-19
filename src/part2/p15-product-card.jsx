@@ -1,141 +1,210 @@
 // ---------------------------------------------------------------
-// P28 — Product Card
+// P — Product Card
 // ---------------------------------------------------------------
+// The single most-used pattern in Autodoc. One card represents one product —
+// badges, image, brand/name, rating, price, delivery, action — and appears in
+// catalog grids, search results and recommendation rails. Two layouts
+// (vertical / horizontal) and two states (in-stock / out-of-stock).
 
-// Local helpers used only inside this chapter.
-//
-// VerticalCard — the grid layout: image on top, brand + name + fitment + price
-// + add stacked beneath. Used in catalog grid, search results, recommendations.
-function VerticalCard({
-  brand = "Bosch", name = "Brake pad set front",
-  fitment = "fits", price = "€46.20", was, addStyle = "icon",
-}) {
-  const fit = fitment === "fits"
-    ? { color: "var(--good)", label: "✓ Fits your BMW" }
-    : fitment === "check"
-    ? { color: "var(--warn)", label: "⚠ Check fitment" }
-    : fitment === "doesnt"
-    ? { color: "var(--bad)", label: "✕ Doesn't fit" }
-    : null;
+// Promo badge — small pill that floats over the top-left of the image.
+// «Best Budget» (ink), «Free Shipping» (green), or any promo tag.
+function MiniBadge({ tone = "ink", label = "Best Budget" }) {
   return (
     <div style={{
-      background: "#fff", border: "1px solid var(--line)",
-      borderRadius: 8, padding: 8, display: "flex", flexDirection: "column",
-    }}>
-      <div style={{
-        height: 70, background: "var(--line-2)", borderRadius: 4,
-        marginBottom: 6, position: "relative",
-      }}>
-        <div style={{
-          position: "absolute", top: 4, right: 4,
-          fontFamily: "JetBrains Mono, monospace",
-          fontSize: 8, color: "var(--muted)",
-          padding: "2px 4px", background: "#fff", borderRadius: 2,
-        }}>{brand}</div>
+      display: "inline-flex", alignItems: "center",
+      padding: "3px 7px", borderRadius: 4,
+      background: tone === "good" ? "#2e7d32" : "#111",
+      color: "#fff", fontSize: 8, fontWeight: 600,
+      fontFamily: '-apple-system, "SF Pro Text", sans-serif',
+      whiteSpace: "nowrap",
+    }}>{label}</div>
+  );
+}
+
+// Save / compare icon stack.
+// `bare` = plain icons (used inside a card, on the content area — horizontal).
+// default = soft white circles (overlaid over a photo — vertical).
+function MiniIconStack({ bare = false }) {
+  const wrap = bare
+    ? { width: 18, height: 18, color: "#6b6b6b",
+        display: "flex", alignItems: "center", justifyContent: "center" }
+    : { width: 22, height: 22, borderRadius: "50%",
+        background: "rgba(255,255,255,0.9)", color: "#3a3a3a",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        boxShadow: "0 1px 3px rgba(0,0,0,0.12)" };
+  const sz = bare ? 15 : 13;
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+      <div style={wrap}>
+        <svg width={sz} height={sz} viewBox="0 0 22 22" fill="none"
+          stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M11 18s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 18 8c0 5.5-7 10-7 10z"/>
+        </svg>
       </div>
-      <div style={{ fontSize: 11, fontWeight: 600, lineHeight: 1.2 }}>{name}</div>
-      {fit && (
-        <div style={{
-          fontFamily: "JetBrains Mono, monospace",
-          fontSize: 9, color: fit.color, marginTop: 4,
-        }}>{fit.label}</div>
-      )}
-      <div style={{
-        marginTop: "auto", paddingTop: 6, display: "flex",
-        alignItems: "center", justifyContent: "space-between", gap: 6,
-      }}>
-        <div>
-          <div style={{ fontSize: 12, fontWeight: 700 }}>{price}</div>
-          {was && <div style={{
-            fontFamily: "JetBrains Mono, monospace",
-            fontSize: 9, color: "var(--muted)",
-            textDecoration: "line-through",
-          }}>{was}</div>}
-        </div>
-        {addStyle === "icon" ? (
-          <div style={{
-            width: 26, height: 26, borderRadius: 13,
-            background: "var(--ink)", color: "#fff",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: 16, lineHeight: 1,
-          }}>+</div>
-        ) : (
-          <div style={{
-            height: 26, padding: "0 10px", borderRadius: 13,
-            background: "var(--ink)", color: "#fff",
-            display: "flex", alignItems: "center",
-            fontSize: 10, fontWeight: 600,
-          }}>Add</div>
-        )}
+      <div style={wrap}>
+        <svg width={sz} height={sz} viewBox="0 0 22 22" fill="none"
+          stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="11" y1="3" x2="11" y2="19"/>
+          <path d="M3 8l4-3 4 3-4 7-4-7zM11 8l4-3 4 3-4 7-4-7z"/>
+        </svg>
       </div>
     </div>
   );
 }
 
-// HorizontalCard — list layout. Image left, content right, tight stepper or +
-// on the right edge. Used in cart, wishlist, "saved for later".
-function HorizontalCard({
-  brand = "Bosch", name = "Brake pad set front",
-  fitment = "fits", price = "€46.20", was,
-  trailing = "add", // "add" | "stepper" | "checkbox"
-  qty = 2,
-}) {
-  const fit = fitment === "fits"
-    ? { color: "var(--good)", label: "✓ Fits your BMW" }
-    : fitment === "check"
-    ? { color: "var(--warn)", label: "⚠ Check fitment" }
-    : fitment === "doesnt"
-    ? { color: "var(--bad)", label: "✕ Doesn't fit" }
-    : null;
+// Star rating row — single yellow ★, rating value, review count.
+function MiniStars({ rating = "4.8", count = "127" }) {
   return (
     <div style={{
-      display: "flex", gap: 10, padding: "10px 0",
-      borderBottom: "1px solid var(--line)", alignItems: "center",
+      display: "flex", alignItems: "center", gap: 4,
+      fontFamily: '-apple-system, "SF Pro Text", sans-serif', fontSize: 9,
     }}>
-      <div style={{
-        width: 44, height: 44, background: "var(--line-2)",
-        borderRadius: 6, flex: "0 0 44px",
-      }}/>
-      <div style={{ flex: 1, minWidth: 0 }}>
+      <span style={{ color: "#f5b800", fontSize: 10, lineHeight: 1 }}>★</span>
+      <span style={{ color: "#111", fontWeight: 700 }}>{rating}</span>
+      <span style={{ color: "#9a9a9a" }}>({count})</span>
+    </div>
+  );
+}
+
+// Photo block. When in stock, promo badges float over the top-left.
+// `overlayIcons` puts the save / compare stack over the top-right of the photo
+// (vertical layout). Horizontal cards set overlayIcons=false and place the
+// icons on the right of the card content instead. Out of stock: no badges,
+// no icons, image dimmed.
+function MiniPhoto({ height = 92, oos = false, overlayIcons = true }) {
+  return (
+    <div style={{
+      position: "relative", height, borderRadius: 8,
+      background: "#ececec", overflow: "hidden",
+      opacity: oos ? 0.55 : 1,
+    }}>
+      {!oos && (
         <div style={{
-          fontFamily: "JetBrains Mono, monospace",
-          fontSize: 9, color: "var(--muted)",
-        }}>{brand}</div>
-        <div style={{ fontSize: 12, fontWeight: 600, lineHeight: 1.2 }}>{name}</div>
-        {fit && (
-          <div style={{
-            fontFamily: "JetBrains Mono, monospace",
-            fontSize: 9, color: fit.color, marginTop: 3,
-          }}>{fit.label}</div>
-        )}
-      </div>
-      <div style={{ textAlign: "right" }}>
-        <div style={{ fontSize: 12, fontWeight: 700 }}>{price}</div>
-        {was && <div style={{
-          fontFamily: "JetBrains Mono, monospace",
-          fontSize: 9, color: "var(--muted)",
-          textDecoration: "line-through",
-        }}>{was}</div>}
-      </div>
-      {trailing === "add" && (
-        <div style={{
-          width: 28, height: 28, borderRadius: 14,
-          background: "var(--ink)", color: "#fff",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          fontSize: 16, lineHeight: 1,
-        }}>+</div>
-      )}
-      {trailing === "stepper" && (
-        <div style={{
-          display: "flex", alignItems: "center",
-          border: "1px solid var(--line)", borderRadius: 16, height: 28,
-          fontFamily: '-apple-system, "SF Pro Text", sans-serif',
+          position: "absolute", top: 6, left: 6,
+          display: "flex", flexDirection: "column", gap: 4, alignItems: "flex-start",
+          maxWidth: "62%", zIndex: 2,
         }}>
-          <div style={{ width: 26, textAlign: "center", fontSize: 14 }}>−</div>
-          <div style={{ width: 22, textAlign: "center", fontSize: 11, fontWeight: 600 }}>{qty}</div>
-          <div style={{ width: 26, textAlign: "center", fontSize: 14 }}>+</div>
+          <MiniBadge tone="ink" label="Best Budget" />
+          <MiniBadge tone="good" label="Free Shipping" />
         </div>
       )}
+      {!oos && overlayIcons && (
+        <div style={{ position: "absolute", top: 6, right: 6, zIndex: 2 }}>
+          <MiniIconStack />
+        </div>
+      )}
+    </div>
+  );
+}
+
+// In-card action — filled «+ Add to cart» when in stock, secondary outlined
+// «Notify me» when out of stock.
+function MiniAction({ oos = false }) {
+  if (oos) {
+    return (
+      <div style={{
+        height: 32, background: "#fff", color: "#111",
+        border: "1.5px solid #111", borderRadius: 8,
+        display: "flex", alignItems: "center", justifyContent: "center",
+        fontSize: 12, fontWeight: 600,
+      }}>Notify me</div>
+    );
+  }
+  return (
+    <div style={{
+      height: 32, background: "#111", color: "#fff", borderRadius: 8,
+      display: "flex", alignItems: "center", justifyContent: "center",
+      gap: 6, fontSize: 12, fontWeight: 600,
+    }}>
+      <span style={{ fontSize: 13, lineHeight: 1 }}>+</span>
+      <span>Add to cart</span>
+    </div>
+  );
+}
+
+// Delivery line — date when in stock, «Out of stock» when not.
+function MiniDelivery({ oos = false, delivery = "Delivery Mon, May 19–21" }) {
+  if (oos) {
+    return (
+      <div style={{ fontSize: 9, color: "#6b6b6b", fontWeight: 600 }}>Out of stock</div>
+    );
+  }
+  return (
+    <div style={{ fontSize: 9, color: "#6b6b6b" }}>{delivery}</div>
+  );
+}
+
+// Vertical mini card — grid layout. Image with overlaid badges/icons on top,
+// content stacked beneath, full-width action at the bottom.
+function MiniVerticalCard({
+  oos = false,
+  name = "RIDEX PLUS Active Defense",
+  spec = "10W-40 · 1L · Longlife-98",
+  rating = "4.8", count = "127",
+  price = "18.99 €", perUnit = "/ pc",
+  delivery = "Delivery Mon, May 19–21",
+}) {
+  return (
+    <div style={{
+      background: "#f7f6f4", borderRadius: 10, padding: 8,
+      display: "flex", flexDirection: "column",
+      fontFamily: '-apple-system, "SF Pro Text", sans-serif',
+    }}>
+      <MiniPhoto height={92} oos={oos} />
+      <div style={{ fontSize: 11, fontWeight: 700, color: "#111", lineHeight: 1.25, marginTop: 8 }}>{name}</div>
+      <div style={{ fontSize: 9, color: "#6b6b6b", marginTop: 3 }}>{spec}</div>
+      <div style={{ marginTop: 5 }}><MiniStars rating={rating} count={count}/></div>
+      <div style={{ marginTop: 6, display: "flex", alignItems: "baseline", gap: 3 }}>
+        <span style={{ fontSize: 14, fontWeight: 700, color: "#111" }}>{price}</span>
+        <span style={{ fontSize: 8, color: "#9a9a9a" }}>{perUnit}</span>
+      </div>
+      <div style={{ marginTop: 3, marginBottom: 8 }}><MiniDelivery oos={oos} delivery={delivery}/></div>
+      <MiniAction oos={oos}/>
+    </div>
+  );
+}
+
+// Horizontal mini card — list layout. Image left with overlaid badges/icons,
+// content middle, full-width action across the bottom.
+function MiniHorizontalCard({
+  oos = false,
+  name = "RIDEX PLUS Active Defense",
+  spec = "10W-40 · 1L · Longlife-98",
+  rating = "4.8", count = "127",
+  price = "18.99 €", perUnit = "/ pc",
+  delivery = "Delivery Mon, May 19–21",
+}) {
+  return (
+    <div style={{
+      background: "#f7f6f4", borderRadius: 10, padding: 8,
+      display: "flex", flexDirection: "column",
+      fontFamily: '-apple-system, "SF Pro Text", sans-serif',
+    }}>
+      <div style={{ display: "flex", gap: 10 }}>
+        <div style={{ width: 92, flexShrink: 0 }}>
+          <MiniPhoto height={92} oos={oos} overlayIcons={false} />
+        </div>
+        <div style={{ flex: 1, minWidth: 0, display: "flex", gap: 6 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{
+              fontSize: 11, fontWeight: 700, color: "#111", lineHeight: 1.25,
+            }}>{name}</div>
+            <div style={{ fontSize: 9, color: "#6b6b6b", marginTop: 3 }}>{spec}</div>
+            <div style={{ marginTop: 5 }}><MiniStars rating={rating} count={count}/></div>
+            <div style={{ marginTop: 6, display: "flex", alignItems: "baseline", gap: 3 }}>
+              <span style={{ fontSize: 14, fontWeight: 700, color: "#111" }}>{price}</span>
+              <span style={{ fontSize: 8, color: "#9a9a9a" }}>{perUnit}</span>
+            </div>
+            <div style={{ marginTop: 3 }}><MiniDelivery oos={oos} delivery={delivery}/></div>
+          </div>
+          {!oos && (
+            <div style={{ flexShrink: 0, paddingTop: 1 }}>
+              <MiniIconStack bare />
+            </div>
+          )}
+        </div>
+      </div>
+      <div style={{ marginTop: 10 }}><MiniAction oos={oos}/></div>
     </div>
   );
 }
@@ -144,99 +213,109 @@ function P15ProductCard() {
   return (
     <Section id="p-product-card">
       <PatternHead title="Product Card"
-        lede={<>The single most-used pattern in Autodoc. A unified card that represents one product — image, brand, name, fitment, price, action. The same card appears in catalog, search results, recommendations, cart, and wishlist. <b>One card, eight contexts.</b></>} />
+        lede={<>The single most-used pattern in Autodoc. One card represents one product — <b>promo badges</b>, image, name, rating, price, delivery, action. The same card appears in catalog grids, search results and recommendation rails, in two layouts (vertical / horizontal) and two states (in-stock / out-of-stock).</>} />
 
       <Callout label="Autodoc reading">
-        Autodoc is a parts e-commerce — a product card is what the user looks at fifty times per session. The card is a single unit of trust: it tells the user <i>what it is</i>, <i>whether it fits their car</i>, <i>what it costs</i>, and <i>what one tap will do</i>. Same component across catalog grid, search results, recommendations, wishlist, cart, saved-for-later, order history — two layouts (vertical / horizontal) and four trailing actions (icon-add, labelled-add, stepper, checkbox).
+        A product card is what the user looks at fifty times a session — a single unit of trust: <i>what it is</i>, <i>what it costs</i>, <i>when it arrives</i>, and <i>what one tap does</i>. Promo badges (Best Budget, Free Shipping) float over the top-left of the image. The save / compare icons sit top-right — <b>over the photo on the vertical card</b>, and <b>on the right of the content on the horizontal card</b>. The trailing action is a full-width button at the bottom: filled <b>Add to cart</b> in stock, secondary <b>Notify me</b> when out of stock.
       </Callout>
 
-      <H3>Two layouts</H3>
+      <H3>In stock — the default</H3>
+      <p>Both layouts carry the same anatomy: image with overlaid badges and icons, name, spec, rating, price with per-unit, delivery date, and a filled Add to cart. Vertical is the grid card (catalog, search); horizontal is the rail card (recommendations, «people also bought»).</p>
+
       <div className="frames-row" style={{ flexWrap: "nowrap" }}>
-        <FrameCell caption="<b>Vertical (grid).</b> Catalog grid, search results, recommendations strip. Image on top, action bottom-right.">
+        <FrameCell caption="<b>Vertical (grid).</b> Two-up grid. Badges top-left of the image, save / compare top-right, full-width Add to cart at the bottom.">
           <Phone>
             <PhoneNavBar title={<div className="skel-row" style={{ width: 80, height: 8, margin: 0 }}/>} left="none" right="none"/>
             <div style={{
-              position: "absolute", top: 90, left: 0, right: 0, padding: "0 14px",
-              display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10,
+              position: "absolute", top: 88, left: 0, right: 0, padding: "0 8px",
+              display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8,
             }}>
-              <VerticalCard fitment="fits" was="€58.00"/>
-              <VerticalCard fitment="fits"/>
-              <VerticalCard fitment="check"/>
-              <VerticalCard fitment="fits"/>
+              <MiniVerticalCard/>
+              <MiniVerticalCard
+                name="BOSCH 0 451 103 318"
+                spec="Oil filter · BMW 3 · 2.0d"
+                rating="4.7" count="89"
+                price="9.40 €"
+                delivery="Delivery Tue, May 20"
+              />
             </div>
           </Phone>
         </FrameCell>
-        <FrameCell caption="<b>Horizontal (list).</b> Cart, wishlist, saved-for-later, order details. Image left, content middle, action far right.">
+        <FrameCell caption="<b>Horizontal (rail).</b> Same anatomy, list shape. Image left with overlaid badges / icons, content middle, full-width Add to cart across the bottom.">
           <Phone>
             <PhoneNavBar title={<div className="skel-row" style={{ width: 80, height: 8, margin: 0 }}/>} left="none" right="none"/>
-            <div style={{ position: "absolute", top: 90, left: 0, right: 0, padding: "0 14px" }}>
-              <HorizontalCard fitment="fits" trailing="stepper" qty={2}/>
-              <HorizontalCard fitment="fits" trailing="stepper" qty={1}/>
+            <div style={{
+              position: "absolute", top: 88, left: 0, right: 0, padding: "0 8px",
+              display: "flex", flexDirection: "column", gap: 8,
+            }}>
+              <MiniHorizontalCard/>
+              <MiniHorizontalCard
+                name="BOSCH 0 451 103 318"
+                spec="Oil filter · BMW 3 · 2.0d"
+                rating="4.7" count="89"
+                price="9.40 €"
+                delivery="Delivery Tue, May 20"
+              />
             </div>
           </Phone>
         </FrameCell>
       </div>
 
-      <H3>Fitment states</H3>
-      <p>Fitment answers the question the user is actually asking — «Will this fit my car?». Three states, each with colour <b>and</b> icon — never colour alone, so the meaning survives colour-blindness, screenshots, and dark mode.</p>
+      <H3>Out of stock</H3>
+      <p>When the product is unavailable the card strips back to the essentials: the delivery line becomes <b>Out of stock</b>, all promo badges drop (Best Budget, Free Shipping — nothing to promote), the save / compare icons drop, the image dims, and the Add to cart button is replaced by a secondary <b>Notify me</b>. Name, rating and price stay readable so the user can still decide to be notified.</p>
+
       <div className="frames-row" style={{ flexWrap: "nowrap" }}>
-        <FrameCell caption="<b>✓ Fits</b> (green). System matched the part to the active car. The user can add with confidence.">
+        <FrameCell caption="<b>Vertical — out of stock.</b> Image dimmed, no badges, no save / compare icons, delivery line reads «Out of stock», trailing action is the secondary «Notify me».">
           <Phone>
             <PhoneNavBar title={<div className="skel-row" style={{ width: 80, height: 8, margin: 0 }}/>} left="none" right="none"/>
             <div style={{
-              position: "absolute", top: 90, left: 0, right: 0, padding: "0 14px",
-              display: "grid", gridTemplateColumns: "1fr", gap: 10,
+              position: "absolute", top: 88, left: 0, right: 0, padding: "0 8px",
+              display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8,
             }}>
-              <VerticalCard fitment="fits" addStyle="label"/>
+              <MiniVerticalCard oos/>
+              <MiniVerticalCard
+                oos
+                name="BOSCH 0 451 103 318"
+                spec="Oil filter · BMW 3 · 2.0d"
+                rating="4.7" count="89"
+                price="9.40 €"
+              />
             </div>
           </Phone>
         </FrameCell>
-        <FrameCell caption="<b>⚠ Check fitment</b> (amber). System cannot fully match — usually a generic part across platforms. Tap reveals the compatibility table; user confirms before adding.">
+        <FrameCell caption="<b>Horizontal — out of stock.</b> Same treatment in the rail card: dimmed image, no badges, no icons, «Out of stock» delivery line, secondary «Notify me» across the bottom.">
           <Phone>
             <PhoneNavBar title={<div className="skel-row" style={{ width: 80, height: 8, margin: 0 }}/>} left="none" right="none"/>
             <div style={{
-              position: "absolute", top: 90, left: 0, right: 0, padding: "0 14px",
-              display: "grid", gridTemplateColumns: "1fr", gap: 10,
+              position: "absolute", top: 88, left: 0, right: 0, padding: "0 8px",
+              display: "flex", flexDirection: "column", gap: 8,
             }}>
-              <VerticalCard fitment="check" addStyle="label"/>
-            </div>
-          </Phone>
-        </FrameCell>
-        <FrameCell caption="<b>✕ Doesn't fit</b> (red). System matched the part as incompatible. Add button is disabled — never silently allow a wrong-fit purchase.">
-          <Phone>
-            <PhoneNavBar title={<div className="skel-row" style={{ width: 80, height: 8, margin: 0 }}/>} left="none" right="none"/>
-            <div style={{
-              position: "absolute", top: 90, left: 0, right: 0, padding: "0 14px",
-              display: "grid", gridTemplateColumns: "1fr", gap: 10,
-            }}>
-              <VerticalCard fitment="doesnt" addStyle="label"/>
+              <MiniHorizontalCard oos/>
+              <MiniHorizontalCard
+                oos
+                name="BOSCH 0 451 103 318"
+                spec="Oil filter · BMW 3 · 2.0d"
+                rating="4.7" count="89"
+                price="9.40 €"
+              />
             </div>
           </Phone>
         </FrameCell>
       </div>
 
-      <H3>Trailing action — four shapes</H3>
-      <p>The card's trailing action is what the user taps to act on this product without leaving the surface. Four shapes, picked by context.</p>
       <Rules items={[
-        "<b>Icon «+».</b> Catalog grid, search results — when space is tight. One tap adds 1 to cart.",
-        "<b>Labelled «Add».</b> Recommendation strips, single-column lists — when there is room. Same behaviour as icon, just more legible.",
-        "<b>Stepper («− 2 +»).</b> Cart, wishlist — once the item is in cart, the trailing action becomes a stepper for inline quantity edits. No second visit to a detail screen needed.",
-        "<b>Checkbox.</b> Multi-select contexts (compare, bulk add). Same card chrome, trailing replaced by a checkbox; tapping the card body still opens detail.",
-      ]}/>
-
-      <Rules items={[
-        "<b>One card, eight contexts.</b> Same component, same proportions, same anatomy across catalog, search, recommendations, cart, wishlist, saved-for-later, order history, cross-sell.",
-        "<b>Fitment is colour AND icon.</b> Never colour alone — accessibility and screenshots both lose meaning otherwise.",
-        "<b>Trailing action is bounded.</b> The card body navigates; only the trailing button performs the inline action. Never overload the card body with two destinations.",
-        "<b>Truncate, don't shrink.</b> Long product names truncate to 2 lines with an ellipsis. Never reduce font size to fit more text.",
-        "<b>Strikethrough above the active price.</b> Old price sits above the current price when discounted, smaller and crossed out. The eye reads top-down — current price wins.",
-        "<b>Disabled means «doesn't fit», not «out of stock».</b> Out-of-stock is a separate label («Notify me») — different recovery path.",
-        "<b>Fitment re-evaluates locally on car switch.</b> When the active car changes, every visible card re-renders its badge without a re-fetch — the visible payoff of the Garage architecture.",
+        "<b>One card, every surface.</b> Same component, same proportions, same anatomy across catalog grid, search results and recommendation rails. Two layouts (vertical / horizontal), two states (in-stock / out-of-stock).",
+        "<b>Badges float over the image, top-left.</b> Best Budget (ink), Free Shipping (green) and other promo tags overlay the top-left corner of the photo, stacked. They hug the corner — never cover the whole image.",
+        "<b>Save / compare sit top-right.</b> On the vertical card the icon stack overlays the top-right of the photo in soft white circles; on the horizontal card it sits as plain icons on the right of the content, off the photo. Either way it never collides with the badges on the left.",
+        "<b>Full-width action at the bottom.</b> Filled Add to cart in stock; secondary outlined Notify me out of stock. The action is always the loudest affordance on the card.",
+        "<b>Out of stock strips back to essentials.</b> Name, rating and price stay; the delivery line reads Out of stock, every promo badge and the save / compare icons drop, the image dims, and the action becomes the secondary Notify me. Nothing on the card invites a purchase that can't happen.",
+        "<b>Price with per-unit.</b> The price carries a small per-unit suffix (/ pc, / L) so the user compares like with like.",
+        "<b>Truncate, don't shrink.</b> Long names truncate; never reduce the name's font size to fit more text.",
       ]}/>
 
       <DoDont
-        doItem="Use the same card in catalog, search, recommendations, cart, and wishlist. The user reads it in the same place every time, and the team ships once."
-        dontItem="Don't ship a separate «cart card» that hides the brand or the fitment badge. The user needs the same context to make the same decision they made when adding it."
+        doItem="Use the same card in catalog, search and recommendations. Float badges over the image top-left, icons top-right, and keep one full-width action at the bottom."
+        dontItem="Don't let badges cover the photo or collide with the save / compare icons. Don't keep an active Add to cart on an out-of-stock card — swap it for the secondary Notify me."
       />
     </Section>
   );

@@ -37,15 +37,14 @@ function TOC() {
     ["", "Quantity Stepper", "p-stepper"],
     ["", "Optimistic UI / Undo", "p-optimistic"],
     // Promotion
-    ["", "Widgets", "p-promo"],
     // System experiences
     ["", "Dynamic Island", "p-island"],
     // Catalog & product
+    ["", "Product Card", "p-product-card"],
     ["", "Reviews & Ratings", "p-reviews"],
     ["", "Image Gallery", "p-gallery"],
   ];
   const partIINotReady = [
-    ["", "Product Card", "p-product-card"],
     ["", "Express Commit Sheet", "prop-pr23"],
     ["", "Map View", "prop-p-map"],
     ["", "Camera Scanner", "prop-p-scanner"],
@@ -119,8 +118,7 @@ function TOC() {
             ["Controls", ["p-buttons", "p-dropdown", "p-filters", "p-accordion", "p-stepper", "p-multistep"]],
             ["Actions on items", ["p-contextmenu", "p-swipe"]],
             ["Status", ["p-loading", "p-empty", "p-errors", "p-optimistic"]],
-            ["Product", ["p-reviews", "p-gallery"]],
-            ["Promotion", ["p-promo"]],
+            ["Product", ["p-product-card", "p-reviews", "p-gallery"]],
             ["System experiences", ["p-island"]],
           ];
           const out = [];

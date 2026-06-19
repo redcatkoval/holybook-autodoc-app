@@ -89,13 +89,11 @@ function App() {
         <hr className="rule"/>
 
         {/* Product */}
+        <P15ProductCard />
+        <hr className="rule"/>
         <PReviews />
         <hr className="rule"/>
         <PGallery />
-        <hr className="rule"/>
-
-        {/* Promotion */}
-        <P14Promo />
         <hr className="rule"/>
 
         {/* System experiences */}
@@ -130,8 +128,6 @@ function App() {
         </div>
         <hr className="rule"/>
 
-        <P15ProductCard />
-        <hr className="rule"/>
         <Pr23ConfirmSheet />
         <hr className="rule"/>
         <PMap />

@@ -106,9 +106,10 @@ function IGViewer({ children, withThumbs = true, thumbSelected = 0 }) {
         alignItems: "center", justifyContent: "space-between",
       }}>
         <div style={{ width: 28 }}/>
-        <div style={{ fontSize: 12, fontWeight: 500, color: "rgba(255,255,255,0.8)" }}>
-          {thumbSelected + 1} / 5
-        </div>
+        <div className="skel-row" style={{
+          width: 100, height: 8, margin: 0,
+          background: "rgba(255,255,255,0.4)", borderRadius: 3,
+        }}/>
         <div style={{ width: 28, fontSize: 18, color: "#fff", textAlign: "right" }}>✕</div>
       </div>
       <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "0 16px" }}>
@@ -340,7 +341,7 @@ function PGallery() {
       </FrameRow>
 
       <H3>Loading and error states</H3>
-      <p>The gallery fetches media — so per the States canon it always carries loading and error. Loading: skeletons in the media slot and the thumb strip while images stream in. Error: a single broken-media tile with a quiet Retry; the rest of the PDP keeps rendering, the user is not blocked from reading specs and adding to cart.</p>
+      <p>The gallery fetches media — so per the States canon it always carries loading and error. Loading: skeletons in the media slot and the thumb strip while images stream in. Error: the gallery stays in its empty-placeholder state and a snackbar at the bottom reports the failure with a quiet Retry — no broken-image tile, no inline error in the media slot. The PDP keeps reading and Add to cart is still reachable.</p>
 
       <div className="frames-row" style={{ flexWrap: "nowrap" }}>
         <FrameCell caption="<b>Loading.</b> Skeleton block where the main media will land, skeleton strip beneath. No spinner — the container itself signals the wait.">
@@ -372,27 +373,37 @@ function PGallery() {
             </div>
           </Phone>
         </FrameCell>
-        <FrameCell caption="<b>Error.</b> Broken-media tile in place of the main slot, plain copy, quiet Retry. The PDP below continues to render — Add to cart is still reachable.">
+        <FrameCell caption="<b>Error — snackbar.</b> The gallery itself stays in its normal placeholder state — no inline broken-image tile, no inline Retry. A snackbar at the bottom reports the failure with a quiet Retry. The PDP keeps reading; the user isn't blocked from Add to cart.">
           <Phone>
             <div style={{ paddingTop: 44 }}>
               <div style={{
-                height: 200, background: "#f7f6f4", border: "1px solid #ececec",
-                borderRadius: 10, margin: "0 16px",
-                display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 10,
-                color: "#9a9a9a",
-              }}>
-                <div style={{ fontSize: 30 }}>▱</div>
-                <div style={{ fontSize: 11, color: "#6b6b6b" }}>Couldn't load images</div>
-                <div style={{
-                  padding: "5px 14px", border: "1px solid #d8d8d8", borderRadius: 999,
-                  fontSize: 11, fontWeight: 600, color: "#111", background: "#fff",
-                }}>Retry</div>
+                height: 200, background: "#ececec", borderRadius: 10,
+                margin: "0 16px",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                color: "#9a9a9a", fontSize: 30,
+              }}>▱</div>
+              <div style={{ display: "flex", gap: 6, padding: "12px 16px 0" }}>
+                {[0,1,2,3,4].map(i => (
+                  <div key={i} style={{
+                    width: 44, height: 44, borderRadius: 6, background: "#ececec",
+                  }}/>
+                ))}
               </div>
               <div style={{ padding: "20px 16px 0" }}>
                 <div className="skel-row" style={{ width: "70%", height: 8, margin: 0, background: "#b8b8b8" }}/>
                 <div className="skel-row" style={{ width: "45%", height: 6, margin: "8px 0 0" }}/>
                 <div className="skel-row" style={{ width: "55%", height: 6, margin: "6px 0 0" }}/>
               </div>
+            </div>
+            <div style={{
+              position: "absolute", left: 14, right: 14, bottom: 18,
+              background: "#111", color: "#fff", borderRadius: 8,
+              padding: "10px 12px", fontSize: 11, zIndex: 5,
+              display: "flex", justifyContent: "space-between", alignItems: "center",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+            }}>
+              <span>Couldn't load images.</span>
+              <span style={{ fontWeight: 600 }}>Retry</span>
             </div>
           </Phone>
         </FrameCell>
