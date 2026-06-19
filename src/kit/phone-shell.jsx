@@ -31,7 +31,8 @@ function Phone({ size = "md", tall = false, children, statusBar = false, statusT
 // small at the top — the BIG title for it lives lower in vehicle-detail.
 
 // Inner stack — identical for the regular layer and the tall anatomy frame.
-function GarageBaseStack({ activeCar = "BMW 320d", plate = "12-AB-34", showActiveTop = true }) {
+function GarageBaseStack({ activeCar = "BMW 320d", plate = "12-AB-34", showActiveTop = true, selector = "carousel" }) {
+  const tabs = selector === "tabs";
   return (
     <>
       <StatusBar tone="dark"/>
@@ -58,35 +59,41 @@ function GarageBaseStack({ activeCar = "BMW 320d", plate = "12-AB-34", showActiv
       <div className="garage-section-row">
         <div className="garage-section-h">
           <span className="lbl">Garage</span>
-          <span className="count-badge">2</span>
+          <span className="count-badge">{tabs ? 3 : 2}</span>
         </div>
-        <span className="top-ico add-plus" title="Add a car">
-          <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
-            <line x1="11" y1="5" x2="11" y2="17"/>
-            <line x1="5" y1="11" x2="17" y2="11"/>
-          </svg>
-        </span>
+        {!tabs && (
+          <span className="top-ico add-plus" title="Add a car">
+            <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
+              <line x1="11" y1="5" x2="11" y2="17"/>
+              <line x1="5" y1="11" x2="17" y2="11"/>
+            </svg>
+          </span>
+        )}
       </div>
-      <div className="car-cards">
-        <div className="car-card active">
-          <div className="car-photo">
-            <span className="car-photo-glyph"/>
-            <span className="car-photo-tag mono">PHOTO</span>
+      {tabs ? (
+        <CarTabsSelector />
+      ) : (
+        <div className="car-cards">
+          <div className="car-card active">
+            <div className="car-photo">
+              <span className="car-photo-glyph"/>
+              <span className="car-photo-tag mono">PHOTO</span>
+            </div>
+            <div className="car-name">BMW 3-series</div>
+            <div className="car-meta-row"><span>F30 · 2018</span><span>92,300 km</span></div>
+            <div className="plate-tag">12-AB-34</div>
           </div>
-          <div className="car-name">BMW 3-series</div>
-          <div className="car-meta-row"><span>F30 · 2018</span><span>92,300 km</span></div>
-          <div className="plate-tag">12-AB-34</div>
-        </div>
-        <div className="car-card">
-          <div className="car-photo" style={{opacity:0.6}}>
-            <span className="car-photo-glyph"/>
-            <span className="car-photo-tag mono">PHOTO</span>
+          <div className="car-card">
+            <div className="car-photo" style={{opacity:0.6}}>
+              <span className="car-photo-glyph"/>
+              <span className="car-photo-tag mono">PHOTO</span>
+            </div>
+            <div className="car-name">Audi A4</div>
+            <div className="car-meta-row"><span>B9 · 2021</span><span>41,800 km</span></div>
+            <div className="plate-tag">56-CD-78</div>
           </div>
-          <div className="car-name">Audi A4</div>
-          <div className="car-meta-row"><span>B9 · 2021</span><span>41,800 km</span></div>
-          <div className="plate-tag">56-CD-78</div>
         </div>
-      </div>
+      )}
       <div className="base-section">
         <div className="h-row">
           <span className="h">Recent orders</span>
@@ -182,6 +189,107 @@ function GarageBaseStack({ activeCar = "BMW 320d", plate = "12-AB-34", showActiv
   );
 }
 
+// ─── CAR SELECTOR — TABS VARIANT ───────────────────────────────────────────
+// Alternative to the swipe carousel: the garage cars become a horizontal row
+// of selectable tabs on top, the selected one outlined in accent; below them a
+// detail panel shows the selected car (photo + mini-specs). «+ Add» is a
+// dashed tile at the end of the tab row. Candidate replacement for the
+// carousel — rendered side-by-side in Ch03 for comparison.
+
+const CAR_PHOTO_FILL = "repeating-linear-gradient(135deg, rgba(245,243,238,0.04) 0 8px, rgba(245,243,238,0.08) 8px 16px)";
+
+function CarTab({ name, selected = false }) {
+  return (
+    <div style={{
+      flex: "0 0 62px",
+      background: "rgba(255,255,255,0.06)",
+      border: selected ? "1.5px solid var(--accent)" : "1px solid rgba(255,255,255,0.1)",
+      borderRadius: 9, padding: 5,
+      display: "flex", flexDirection: "column", gap: 4,
+    }}>
+      <div style={{
+        height: 22, borderRadius: 4,
+        border: "1px dashed rgba(245,243,238,0.2)", background: CAR_PHOTO_FILL,
+      }}/>
+      <div style={{
+        fontSize: 8, fontWeight: 600, color: "#f5f3ee",
+        whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+        textAlign: "center",
+      }}>{name}</div>
+    </div>
+  );
+}
+
+function CarTabsSelector() {
+  return (
+    <>
+      <div style={{
+        display: "flex", gap: 6, padding: "4px 16px 12px",
+        overflowX: "clip",
+      }}>
+        <CarTab name="BMW 3-series" selected />
+        <CarTab name="Audi A4" />
+        <CarTab name="VW Golf" />
+        <div style={{
+          flex: "0 0 40px",
+          border: "1.5px dashed rgba(245,243,238,0.3)", borderRadius: 9,
+          display: "flex", flexDirection: "column", alignItems: "center",
+          justifyContent: "center", gap: 2, color: "rgba(245,243,238,0.6)",
+        }}>
+          <span style={{ fontSize: 14, lineHeight: 1 }}>+</span>
+          <span style={{ fontSize: 7 }}>Add</span>
+        </div>
+      </div>
+
+      <div style={{
+        margin: "0 16px 8px",
+        background: "rgba(255,255,255,0.04)",
+        border: "1px solid rgba(255,255,255,0.08)",
+        borderRadius: 14, padding: 12,
+      }}>
+        <div style={{
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          marginBottom: 10,
+        }}>
+          <div style={{
+            display: "inline-flex", alignItems: "center", gap: 6,
+            padding: "4px 10px", borderRadius: 999,
+            background: "rgba(255,255,255,0.08)",
+          }}>
+            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--accent)" }}/>
+            <span style={{
+              fontFamily: '"JetBrains Mono", monospace', fontSize: 9,
+              letterSpacing: "0.14em", color: "#f5f3ee",
+            }}>SELECTED</span>
+          </div>
+          <div className="plate-tag">12-AB-34</div>
+        </div>
+        <div style={{
+          height: 96, borderRadius: 8,
+          border: "1px dashed rgba(245,243,238,0.2)", background: CAR_PHOTO_FILL,
+          marginBottom: 10,
+        }}/>
+        <div style={{ fontSize: 15, fontWeight: 700, color: "#f5f3ee" }}>BMW 3-series</div>
+        <div style={{
+          fontFamily: '"JetBrains Mono", monospace', fontSize: 10,
+          color: "rgba(245,243,238,0.55)", marginTop: 3,
+        }}>F30 · 2018</div>
+        <div style={{
+          display: "flex", alignItems: "center", gap: 8, marginTop: 10,
+          color: "rgba(245,243,238,0.75)",
+        }}>
+          <svg width="16" height="16" viewBox="0 0 22 22" fill="none"
+            stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M4 16 A8 8 0 1 1 18 16"/>
+            <line x1="11" y1="13" x2="14.5" y2="9"/>
+          </svg>
+          <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 11, color: "#f5f3ee" }}>92,300 km</span>
+        </div>
+      </div>
+    </>
+  );
+}
+
 function GarageBase({ activeCar, year, plate, showActiveTop = true, light = false, compact = false }) {
   // `compact` retained for backwards-compat; visually identical to the regular
   // layer now (single canonical topbar), so no special rendering.
@@ -202,6 +310,16 @@ function GarageBaseFull() {
   return (
     <div className="layer-base full">
       <GarageBaseStack/>
+    </div>
+  );
+}
+
+// Tabs-selector variant of the full base layer — same stack, car selector
+// rendered as horizontal tabs + a selected-car detail panel.
+function GarageBaseTabsFull() {
+  return (
+    <div className="layer-base full">
+      <GarageBaseStack selector="tabs"/>
     </div>
   );
 }
